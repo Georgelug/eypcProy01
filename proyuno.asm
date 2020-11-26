@@ -93,6 +93,16 @@ imprimeReloj:
 	int 10h
 
 	mov ah, 09h
+	lea dx, tecla
+	int 21h
+
+	mov ah, 02h
+	mov bh, 00d
+	mov dh, 3
+	mov dl, 28
+	int 10h
+
+	mov ah, 09h
 	lea dx, reloj
 	int 21h
 
@@ -102,7 +112,7 @@ imprimeReloj:
 	
 	mov ah, 02h
 	mov bh, 00d
-	mov dh, 3
+	mov dh, 5
 	mov dl, 38
 	int 10h
 
@@ -113,16 +123,6 @@ imprimeReloj:
 	mov ah, 1
 	int 16h
 	jz repite
-
-	mov ah, 02h
-	mov bh, 00d
-	mov dh, 10
-	mov dl, 28
-	int 10h
-
-	mov ah, 09h
-	lea dx, tecla
-	int 21h
 
 	mov ah, 08
 	int 21h

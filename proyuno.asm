@@ -25,7 +25,7 @@ main:
 
 limpiar:
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN
-	mov bh, 07h				;COLOR DE FONDO Y LETRA
+	mov bh, 07h			;COLOR DE FONDO Y LETRA
 	mov cx, 0000h			;COORDENADAS INICIO
 	mov dx, 184Fh			;COORDENADAS DE FIN 
 	int 10h
@@ -33,28 +33,28 @@ limpiar:
 colorear:
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN
 	mov bh, 01001111b 		;COLOR DE FONDO Y LETRA
-	mov ch, 0				;PUNTO INICIAL HACIA ABAJO
-	mov cl, 0				;PUNTO INICIAL HACIA LA DERECHA
-	mov dh, 25				;PUNTO FINAL HACIA ABAJO
-	mov dl, 28				;PUNTO FINAL HACIA LA DERECHA
+	mov ch, 0			;PUNTO INICIAL HACIA ABAJO
+	mov cl, 0			;PUNTO INICIAL HACIA LA DERECHA
+	mov dh, 25			;PUNTO FINAL HACIA ABAJO
+	mov dl, 28			;PUNTO FINAL HACIA LA DERECHA
 	int 10h
 
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN
 	mov bh, 00001110b 		;COLOR DE FONDO Y LETRA
-	mov ch, 0				;PUNTO INICIAL HACIA ABAJO
-	mov cl, 29				;PUNTO INICIAL HACIA LA DERECHA
-	mov dh, 25				;PUNTO FINAL HACIA ABAJO
-	mov dl, 79				;PUNTO FINAL HACIA LA DERECHA
+	mov ch, 0			;PUNTO INICIAL HACIA ABAJO
+	mov cl, 29			;PUNTO INICIAL HACIA LA DERECHA
+	mov dh, 25			;PUNTO FINAL HACIA ABAJO
+	mov dl, 79			;PUNTO FINAL HACIA LA DERECHA
 	int 10h
 
 imprimeMenu:
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 1				;1 CUADRO HACIA ABAJO
-	mov dl, 1				;1 CUADRO HACIA LA DERECHA
+	mov dh, 1			;1 CUADRO HACIA ABAJO
+	mov dl, 1			;1 CUADRO HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;COMIENZA A IMPRIMIR EN PANTALLA EL MENÚ
+	mov ah, 09h			;COMIENZA A IMPRIMIR EN PANTALLA EL MENÚ
 	lea dx, menu
 	int 21h
 
@@ -70,13 +70,13 @@ imprimeMenu:
 	lea dx, menu5
 	int 21h
 
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 10				;10 CUADROS HACIA ABAJO
-	mov dl, 0				;0 CUADRO HACIA LA DERECHA
+	mov dh, 10			;10 CUADROS HACIA ABAJO
+	mov dl, 0			;0 CUADRO HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;COMIENZA A IMPRIMIR LOS NOMBRES
+	mov ah, 09h			;COMIENZA A IMPRIMIR LOS NOMBRES
 	lea dx, nombre1
 	int 21h
 
@@ -84,95 +84,95 @@ imprimeMenu:
 	int 21h
 
 leeTeclado:	
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 7				;7 CUADROS HACIA ABAJO
-	mov dl, 0				;0 CUADROS HACIA LA DERECHA
+	mov dh, 7			;7 CUADROS HACIA ABAJO
+	mov dl, 0			;0 CUADROS HACIA LA DERECHA
 	mov ah, 08
 	int 21h
 
-	cmp al,49				;49 = 1d
+	cmp al,49			;49 = 1d
 	je imprimeReloj
 
-	cmp al, 50				;50 = 2d
+	cmp al, 50			;50 = 2d
 	je imprimeCronometro
 
-	cmp al, 51				;51 = 3d2jh
+	cmp al, 51			;51 = 3d2jh
 	je salir
 
 imprimeReloj:
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 1				;1 CUADRO HACIA ABAJO
-	mov dl, 30				;30 CUADROS HACIA LA DERECHA
+	mov dh, 1			;1 CUADRO HACIA ABAJO
+	mov dl, 30			;30 CUADROS HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+	mov ah, 09h			;IMPRIME EL MENSAJE GUARDADO EN reloj
 	lea dx, reloj
 	int 21h
 
-	repite:					;CICLO INFINITO QUE VA A REPETIRSE HASTA RECIBIR UNA TECLA
+	repite:				;CICLO INFINITO QUE VA A REPETIRSE HASTA RECIBIR UNA TECLA
 	lea bx, time			;OBTENEMOS LA HORA GUARDANDOLA EN BX 
 	call gettime			;LLAMAMOS A LA FUNCIÓN gettime
 	
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 2				;3 CUADROS HACIA ABAJO
-	mov dl, 45				;45 CUADROS HACIA LA DERECHA
+	mov dh, 2			;3 CUADROS HACIA ABAJO
+	mov dl, 45			;45 CUADROS HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;IMPRIME LA HORA EN CONSOLA
+	mov ah, 09h			;IMPRIME LA HORA EN CONSOLA
 	lea dx, time
 	int 21h
 
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 6				;6 CUADROS HACIA ABAJO
-	mov dl, 30				;30 CUADROS HACIA LA DERECHA
+	mov dh, 6			;6 CUADROS HACIA ABAJO
+	mov dl, 30			;30 CUADROS HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN tecla
+	mov ah, 09h			;IMPRIME EL MENSAJE GUARDADO EN tecla
 	lea dx, tecla
 	int 21h
 
-	mov ah, 1				;SENTENCIA QUE ESTA EN CONSTANTE FUNCIONAMIENTO Y SERÁ INTERRUMPIDA
-	int 16h					;HASTA OBTENER UN CARACTER DE TECLADO
-	jz repite 				;CICLO QUE SE REPITE
+	mov ah, 1			;SENTENCIA QUE ESTA EN CONSTANTE FUNCIONAMIENTO Y SERÁ INTERRUMPIDA
+	int 16h				;HASTA OBTENER UN CARACTER DE TECLADO
+	jz repite 			;CICLO QUE SE REPITE
 
-	mov ah, 08				;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
+	mov ah, 08			;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
 	int 21h
 
-	jmp limpiar				;HACE UN SALTO HACIA LA ETIQUETA limpiar
+	jmp limpiar			;HACE UN SALTO HACIA LA ETIQUETA limpiar
 
 imprimeCronometro:
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 1				;1 CUADRO HACIA ABAJO
-	mov dl, 30				;30 CUADROS HACIA LA DERECHA
+	mov dh, 1			;1 CUADRO HACIA ABAJO
+	mov dl, 30			;30 CUADROS HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN cronometro
+	mov ah, 09h			;IMPRIME EL MENSAJE GUARDADO EN cronometro
 	lea dx, cronometro 
 	int 21h
 
-	mov ah, 02h				;POSICIONA EL CURSOR EN:
+	mov ah, 02h			;POSICIONA EL CURSOR EN:
 	mov bh, 00d
-	mov dh, 7				;7 CUADROS HACIA ABAJO
-	mov dl, 30				;30 CUADROS HACIA LA DERECHA
+	mov dh, 7			;7 CUADROS HACIA ABAJO
+	mov dl, 30			;30 CUADROS HACIA LA DERECHA
 	int 10h
 
-	mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN tecla
+	mov ah, 09h			;IMPRIME EL MENSAJE GUARDADO EN tecla
 	lea dx, tecla
 	int 21h
 
-	mov ah, 08				;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
+	mov ah, 08			;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
 	int 21h
 
-	jmp limpiar				;HACE UN SALTO HACIA LA ETIQUETA limpiar
+	jmp limpiar			;HACE UN SALTO HACIA LA ETIQUETA limpiar
 
 gettime proc				;INICIO DE LA FUNCION gettime
-	push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
-	push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
+	push ax				;LO QUE CONTIENE ax SE GUARDA EN LA PILA
+	push cx				;LO QUE CONTIENE bx SE GUARDA EN LA PILA
 
 	mov ah, 2ch
 	int 21h
@@ -189,29 +189,29 @@ gettime proc				;INICIO DE LA FUNCION gettime
 	call convert 			;LLAMADA A LA FUNCION convert
 	mov [bx+6], ax 			;SE CONVIERTEN LOS SEGUNDOS
 
-	pop cx 					;SACAMOS DE LA PILA cx
-	pop ax					;SACAMOS DE LA PILA ax
+	pop cx 				;SACAMOS DE LA PILA cx
+	pop ax				;SACAMOS DE LA PILA ax
 
-	ret 					;RETORNAMOS LOS VALORES OBTENIDOS
+	ret 				;RETORNAMOS LOS VALORES OBTENIDOS
 gettime endp
 
 convert proc 				;INICIO DE LA FUNCION convert
-	push dx 				;LO QUE CONTIENE dx SE GUARDA EN LA PILA
+	push dx 			;LO QUE CONTIENE dx SE GUARDA EN LA PILA
 
-	mov ah, 0				;UTILIZAMOS ESTAS FUNCIONES PARA PASAR DE ASCII A DECIMAL
+	mov ah, 0			;UTILIZAMOS ESTAS FUNCIONES PARA PASAR DE ASCII A DECIMAL
 	mov dl, 10
 	div dl
 	or ax, 3030h	
 
-	pop dx					;SACAMOS DE LA PILA dx
-	ret 					;RETORNAMOS EL VALOR OBTENIDO
+	pop dx				;SACAMOS DE LA PILA dx
+	ret 				;RETORNAMOS EL VALOR OBTENIDO
 convert endp
 
 salir:
-	mov ax, 0600h	;LLAMADA A LA FUNCIÓN
-	mov bh, 07h		;COLOR DE FONDO Y LETRA
-	mov cx, 0000h	;COORDENADAS INICIO
-	mov dx, 184Fh	;COORDENADAS DE FIN 
+	mov ax, 0600h			;LLAMADA A LA FUNCIÓN
+	mov bh, 07h			;COLOR DE FONDO Y LETRA
+	mov cx, 0000h			;COORDENADAS INICIO
+	mov dx, 184Fh			;COORDENADAS DE FIN 
 	int 10h
 
 	mov ah,4Ch

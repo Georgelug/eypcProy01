@@ -90,6 +90,7 @@ imprimeMenu:
 	int 21h
 
 leeTeclado:	
+	;esto es usable
 	mov ah, 02h				;POSICIONA EL CURSOR EN:
 	mov bh, 00d
 	mov dh, 7				;7 CUADROS HACIA ABAJO
@@ -159,8 +160,6 @@ imprimeCronometro:
 	mov dh, 1				;1 CUADRO HACIA ABAJO
 	mov dl, 30				;30 CUADROS HACIA LA DERECHA
 	int 10h
-
-	mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN cronometro
 	lea dx, cronometro 
 	int 21h
 
@@ -257,6 +256,8 @@ convert proc 				;INICIO DE LA FUNCION convert
 	pop dx					;SACAMOS DE LA PILA dx
 	ret 					;RETORNAMOS EL VALOR OBTENIDO
 convert endp
+
+
 
 salir:
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN

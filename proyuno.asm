@@ -138,27 +138,6 @@ main:
 		je salir
 	
 
-	leeTecladoCronometro:	
-		mov ah, 02h				;POSICIONA EL CURSOR EN:
-		mov bh, 00d
-		mov dh, 7				;7 CUADROS HACIA ABAJO
-		mov dl, 0				;0 CUADROS HACIA LA DERECHA
-		mov ah, 08
-		int 21h
-	
-	;	cmp al,49				;49 = 1d
-	;	je imprimeReloj
-	;
-	;	cmp al, 50				;50 = 2d
-	;	je imprimeFecha
-	;
-	;	cmp al, 51				;51 = 3d
-	;	je imprimeCronometro
-	;
-	;	cmp al, 52				;52 = 4d
-	;	je salir
-	
-
 	imprimeReloj:
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
@@ -203,6 +182,26 @@ main:
 		
 			jmp limpiar				;HACE UN SALTO HACIA LA ETIQUETA limpiar
 	
+	leeTecladoCronometro:	
+		mov ah, 02h				;POSICIONA EL CURSOR EN:
+		mov bh, 00d
+		mov dh, 7				;7 CUADROS HACIA ABAJO
+		mov dl, 0				;0 CUADROS HACIA LA DERECHA
+		mov ah, 08
+		int 21h
+	
+		cmp al,49				;49 = 1d
+		je iniciarCronometro
+	
+		cmp al, 50				;50 = 2d
+		je reiniciarCronometro
+	
+		cmp al, 51				;51 = 3d
+		je 
+	
+		cmp al, 52				;52 = 4d
+		je salir
+
 
 	imprimeCronometro:
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
@@ -228,7 +227,7 @@ main:
 	
 		jmp limpiar				;HACE UN SALTO HACIA LA ETIQUETA limpiar
 	
-
+	;extra
 	imprimeFecha:
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d

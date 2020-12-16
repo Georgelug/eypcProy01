@@ -35,28 +35,27 @@ title "TAREA CUATRO"
 
 	;Cronometro
 	ms dw 0h
-
 	s db 0h
-
 	m db 0h
-
 	h db 0h
-
 	i dw 0h
 
 	saltoLinea 	db	0Dh , 0Ah , "$"
 
 	tituloCronometro db "CRONOMETRO: ", 0Dh, 0Ah, "$"
+	Q1Cronometro db "EN CONTEO EL CRONOMETRO: ", 0Dh, 0Ah, "$"
+	Q2Cronometro db "EN PAUSA EL CRONOMETRO: ", 0Dh, 0Ah, "$"
 	cronometro db "00:00:00.00", 0Dh, 0Ah, "$"
 	iniciar db "(1) PLAY", 0Dh, 0Ah, "$"
 	detener db "(2) PAUSA", 0Dh, 0Ah, "$"
 	reiniciar db "(3) RESET", 0Dh, 0Ah, "$"
-	regresar db "(4) SALIR AL MENÚ", 0Dh, 0Ah, "$"
+	regresar db "(4) SALIR AL MENU", 0Dh, 0Ah, "$"
 
 	;otras
 	tecla db "PRESIONA CUALQUIER TECLA PARA REGRESAR...", 0Dh, 0Ah, "$"
 	menu2 db "SELECCIONA UNA OPCION: ", 0Dh, 0Ah, "$"
 	tmp db "aqui va un proc", 0Dh, 0Ah, "$"
+	aux db ?
 
 
 	.code
@@ -196,6 +195,11 @@ main:
 
 
 	imprimeCronometro:
+		mov [ms] , 0h
+		mov [s] , 0h
+		mov [m] , 0h
+		mov [h] , 0h
+		mov [i] , 0h
 
 		;TITULO 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
@@ -252,11 +256,6 @@ main:
 		lea dx, regresar
 		int 21h
 
-		;mov dx , [ i ]	;dx = i
-		;or dl , 30h		;i - 30h
-		;mov ah,02h
-		;int 21h
-
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
 		mov dh, 7				;7 CUADROS HACIA ABAJO
@@ -268,8 +267,7 @@ main:
 		je loop1
 
 		cmp al, 52				;52 = 4d
-
-		je imprimeMenu			;pendiente: limpiar
+		je limpiar			;pendiente: limpiar
 
 		loop1:
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
@@ -283,19 +281,54 @@ main:
 			mov ah,02h
 			int 21h
 
-			lea dx , [ saltoLinea ]		
-			mov ax , 0900h		
-			int 21h		
+			;lea dx , [ saltoLinea ]		
+			;mov ax , 0900h		
+			;int 21h		
 			
 			inc [ i ]
 
-			;mov ax, 0600h			;LLAMADA A LA FUNCIÓN
-			;mov bh, 07h				;COLOR DE FONDO Y LETRA
-			;mov cx, 0000h			;COORDENADAS INICIO
-			;mov dx, 184Fh			;COORDENADAS DE FIN 
-			;int 10h
 
-			
+			;Menu
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 4				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, menu2
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 5				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, detener
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 6				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, reiniciar
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 7				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, regresar
+			int 21h
+
 			mov ah, 1				;SENTENCIA QUE ESTA EN CONSTANTE FUNCIONAMIENTO Y SERÁ INTERRUMPIDA
 			int 16h					;HASTA OBTENER UN CARACTER DE TECLADO
 			jz loop1 				;CICLO QUE SE loop1
@@ -303,7 +336,84 @@ main:
 			mov ah, 08				;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
 			int 21h
 
-			jmp limpiar	
+			cmp al, 50				;50 = 2d
+			je auxiliar
+
+			cmp al, 51				;51 = 3d
+			je imprimeCronometro
+
+			cmp al, 52				;52 = 4d
+			je limpiar			;pendiente: limpiar
+
+			mov [aux], al
+			jmp limpiar
+
+		auxiliar:
+			jmp pausaloop
+
+		pausaloop:
+			;Cronometro como tal
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 2				;3 CUADROS HACIA ABAJO
+			mov dl, 47				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, cronometro
+			int 21h
+
+
+			;Menu
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 4				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, menu2
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 5				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, iniciar
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 6				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, reiniciar
+			int 21h
+
+			mov ah, 02h				;POSICIONA EL CURSOR EN:
+			mov bh, 00d
+			mov dh, 7				;3 CUADROS HACIA ABAJO
+			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			int 10h
+
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			lea dx, regresar
+			int 21h
+
+			cmp al, 49				;49 = 1d
+			je loop1
+
+			cmp al, 51				;51 = 3d
+			je imprimeCronometro
+
+			cmp al, 52				;52 = 4d
+			je limpiar			;pendiente: limpiar 
+		
 	
 	;extra
 	imprimeFecha:
@@ -411,6 +521,9 @@ main:
 ;		lea dx , tmp
 ;		int 21
 ;	Exit endp
+
+	;Pausa
+
 	
 salir:
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN

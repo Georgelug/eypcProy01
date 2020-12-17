@@ -50,7 +50,7 @@ title "TAREA CUATRO"
 	Q1Cronometro db "EN CONTEO EL CRONOMETRO: ", 0Dh, 0Ah, "$"
 	Q2Cronometro db "EN PAUSA EL CRONOMETRO: ", 0Dh, 0Ah, "$"
 	;			   mm:ss.ms
-	cronometro db "00:00.00", 0Dh, 0Ah, "$"
+	cronometro db "00:00.000", 0Dh, 0Ah, "$"
 	iniciar db "(1) PLAY", 0Dh, 0Ah, "$"
 	detener db "(2) PAUSA", 0Dh, 0Ah, "$"
 	reiniciar db "(3) RESET", 0Dh, 0Ah, "$"
@@ -539,7 +539,7 @@ main:
 		mov ax, ms
 		mov ah ,0
 		call convertcron			;LLAMADA A LA FUNCION convert
-		mov [bx+6], ax			;SE CONVIERTEN LAS HORAS
+		mov [bx+7], ax			;SE CONVIERTEN LAS HORAS
 	
 		pop cx 					;SACAMOS DE LA PILA cx
 		pop ax					;SACAMOS DE LA PILA ax
@@ -566,8 +566,10 @@ main:
 		push bx
 
 		mov ax , 3030h
-		mov [bx+6], ax
+		mov [bx], ax
 		mov [bx+3], ax
+		mov [bx+6], ax
+		mov [bx+7], ax
 		pop bx
 		pop cx
 		pop ax

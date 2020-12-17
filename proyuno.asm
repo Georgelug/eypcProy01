@@ -345,7 +345,6 @@ main:
 			cmp al, 52				;52 = 4d
 			je limpiar			;pendiente: limpiar
 
-			mov [aux], al
 			jmp limpiar
 
 		auxiliar:
@@ -405,6 +404,13 @@ main:
 			lea dx, regresar
 			int 21h
 
+			mov ah, 1				;SENTENCIA QUE ESTA EN CONSTANTE FUNCIONAMIENTO Y SERÁ INTERRUMPIDA
+			int 16h					;HASTA OBTENER UN CARACTER DE TECLADO
+			jz pausaloop 				;CICLO QUE SE loop1
+		
+			mov ah, 08				;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
+			int 21h
+
 			cmp al, 49				;49 = 1d
 			je loop1
 
@@ -413,6 +419,8 @@ main:
 
 			cmp al, 52				;52 = 4d
 			je limpiar			;pendiente: limpiar 
+
+			jmp limpiar
 		
 	
 	;extra

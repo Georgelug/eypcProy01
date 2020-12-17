@@ -31,19 +31,14 @@ title "TAREA CUATRO"
 
 	;Fecha
 	fecha db "LA FECHA ACTUAL ES: ", 0Dh, 0Ah, "$"
-	total db "00/00/00", 0Dh, 0Ah, "$"
+	date db "00/00/0000", 0Dh, 0Ah, "$"
 
 	;Cronometro
 	ms dw 0h
 	s dw 0h
 	m dw 0h
-
 	alta dw 0h
-
-	;baja dw 0h
-
 	diez db 10
-
 	saltoLinea 	db	0Dh , 0Ah , "$"
 
 	tituloCronometro db "CRONOMETRO: ", 0Dh, 0Ah, "$"
@@ -55,13 +50,10 @@ title "TAREA CUATRO"
 	detener db "(2) PAUSA", 0Dh, 0Ah, "$"
 	reiniciar db "(3) RESET", 0Dh, 0Ah, "$"
 	regresar db "(4) SALIR AL MENU", 0Dh, 0Ah, "$"
-	;resetaux db "00:00", 0Dh, 0Ah, "$"
 
 	;otras
 	tecla db "PRESIONA CUALQUIER TECLA PARA REGRESAR...", 0Dh, 0Ah, "$"
 	menu2 db "SELECCIONA UNA OPCION: ", 0Dh, 0Ah, "$"
-	tmp db "aqui va un proc", 0Dh, 0Ah, "$"
-	aux db ?
 
 
 	.code
@@ -451,37 +443,34 @@ main:
 		mov dh, 1				;1 CUADRO HACIA ABAJO
 		mov dl, 30				;30 CUADROS HACIA LA DERECHA
 		int 10h
-	
+
 		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN fecha
 		lea dx, fecha
 		int 21h
-	
-		mov ah, 2Ah
-		int 21h
-	
-		lea bx, total			;OBTENEMOS LA HORA GUARDANDOLA EN BX 
-		call gettime			;LLAMAMOS A LA FUNCIÓN gettime
-		
+
+		lea bx, date				;LA VARIABLE date ES "TRANSPORTADA" AL REGISTRO bx
+		call GETDATE				;LLAMAMOS AL PROCESO GETDATE
+
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
 		mov dh, 2				;3 CUADROS HACIA ABAJO
 		mov dl, 45				;45 CUADROS HACIA LA DERECHA
 		int 10h
-	
-		mov ah, 09h				;IMPRIME LA HORA EN CONSOLA
-		lea dx, total
+
+		mov ah, 09h				;IMPRIME LA FECHA EN CONSOLA
+		lea dx, date
 		int 21h
-	
+
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
 		mov dh, 7				;7 CUADROS HACIA ABAJO
 		mov dl, 30				;30 CUADROS HACIA LA DERECHA
 		int 10h
-	
+
 		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN tecla
 		lea dx, tecla
 		int 21h
-	
+
 		mov ah, 08				;INTERRUPCION PARA QUE EL USUARIO ESCRIBA UN CARACTER
 		int 21h
 	
@@ -527,6 +516,58 @@ main:
 		ret 					;RETORNAMOS EL VALOR OBTENIDO
 	convert endp
 	
+	GETDATE proc 					;INICIO DEL PROCESO GETTIME
+	push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
+	push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
+
+	mov ah, 2Ah 				;INTERRUPCION QUE SIRVE PARA OBTENER LA FECHA DEL SISTEMA
+	int 21h
+
+	mov ax, cx 				;GUARDAMOS EN AX EL CONTENIDO DE CX, EN ESTE CASO EL AÑO
+	mov cx, ax 				;GUARDAMOS EN CX UNA COPIA DE AX PARA EVITAR PROBLEMAS EN EL CODIGO
+
+	AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
+	mov al, 0				;MOVEMOS A AL 0d 
+	AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
+	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
+	or al, 30h 				;PASAMOS DE ASCII A DECIMAL
+	mov [bx+9], al    			;SE MUEVEN LAS UNIDADES DEL AÑO A LA POSICION QUE TIENE [bx+9]
+						;EJEMPLO 00/00/0000
+
+	mov ax, cx 				;LO GUARDADO ANTERIORMENTE ES MOVIDO A AX
+	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+
+	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 2
+	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+	or al, 30h 				;PASAMOS DE ASCII A DECIMAL
+	mov [bx+8], al 				;SE MUEVEN LAS DECENAS DEL AÑO A LA POSICION QUE TIENE [bx+8]
+						;EJEMPLO 00/00/0020
+
+	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
+	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+	or ax, 3030h 				;PASAMOS DE ASCII A DECIMAL
+	mov [bx+7], ah 				;SE MUEVEN LAS CENTENAS DEL AÑO A LA POSICION QUE TIENE [bx+7]
+	mov [bx+6], al 				;SE MUEVEN LAS UNIDADES DE MILLAR DEL AÑO A LA POSICION QUE TIENE [bx+6]
+						;EJEMPLO 00/00/2020
+
+	mov al, dh 				;GUARDAMOS EN AL EL CONTENIDO DE DH, EN ESTE CASO EL NUMERO DE MES 
+	call convert 				;LLAMAMOS AL PROCESO CONVERT
+	mov [bx+3], ax 				;SE MUEVE EL NUMERO DE MES A LA POSICION QUE CONTIENE [bx+3]
+						;EJEMPLO 00/12/2020
+
+	mov al, dl 				;GUARDAMOS EN AL EL CONTENIDO DE DL, EN ESTE CASO EL NUMERO DEL DÍA
+	call convert 				;LLAMAMOS AL PROCESO CONVERT
+	mov [bx], ax 				;SE MUEVE EL NUMERO DEL DIA A LA POSICION QUE CONTIENE [bx]
+						;EJEMPLO 14/12/2020
+
+	pop cx 					;SACAMOS DE LA PILA cx
+	pop ax					;SACAMOS DE LA PILA ax
+
+	ret 					;CERRAMOS EL PROCESO Y CONTINUAMOS CON EL FLUJO DEL PROGRAMA
+GETDATE endp
+
+
+	;Procedimientos del cronometro
 	convertaCronometro proc
 		push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
 		push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
@@ -575,6 +616,8 @@ main:
 		pop ax
 		ret
 	reset endp
+
+
 		
 	
 salir:

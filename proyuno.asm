@@ -35,21 +35,27 @@ title "TAREA CUATRO"
 
 	;Cronometro
 	ms dw 0h
-	s db 0h
-	m db 0h
-	h db 0h
-	i dw 0h
+	s dw 0h
+	m dw 0h
+
+	alta dw 0h
+
+	;baja dw 0h
+
+	diez db 10
 
 	saltoLinea 	db	0Dh , 0Ah , "$"
 
 	tituloCronometro db "CRONOMETRO: ", 0Dh, 0Ah, "$"
 	Q1Cronometro db "EN CONTEO EL CRONOMETRO: ", 0Dh, 0Ah, "$"
 	Q2Cronometro db "EN PAUSA EL CRONOMETRO: ", 0Dh, 0Ah, "$"
-	cronometro db "00:00:00.00", 0Dh, 0Ah, "$"
+	;			   mm:ss.ms
+	cronometro db "00:00.00", 0Dh, 0Ah, "$"
 	iniciar db "(1) PLAY", 0Dh, 0Ah, "$"
 	detener db "(2) PAUSA", 0Dh, 0Ah, "$"
 	reiniciar db "(3) RESET", 0Dh, 0Ah, "$"
 	regresar db "(4) SALIR AL MENU", 0Dh, 0Ah, "$"
+	;resetaux db "00:00", 0Dh, 0Ah, "$"
 
 	;otras
 	tecla db "PRESIONA CUALQUIER TECLA PARA REGRESAR...", 0Dh, 0Ah, "$"
@@ -195,11 +201,23 @@ main:
 
 
 	imprimeCronometro:
-		mov [ms] , 0h
-		mov [s] , 0h
-		mov [m] , 0h
-		mov [h] , 0h
-		mov [i] , 0h
+		mov [ms] , 00h
+		mov [s] , 30h
+		mov [m] , 30h		
+
+		mov ah, 02h				;POSICIONA EL CURSOR EN:
+		mov bh, 00d
+		mov dh, 2				;3 CUADROS HACIA ABAJO
+		mov dl, 47				;45 CUADROS HACIA LA DERECHA
+		int 10h
+
+		mov dl , 20h
+		mov ah,02h
+		int 21h
+
+
+		lea bx , cronometro
+		call reset	
 
 		;TITULO 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
@@ -219,6 +237,8 @@ main:
 		mov dh, 2				;3 CUADROS HACIA ABAJO
 		mov dl, 47				;45 CUADROS HACIA LA DERECHA
 		int 10h
+
+
 
 		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
 		lea dx, cronometro
@@ -270,22 +290,23 @@ main:
 		je limpiar			;pendiente: limpiar
 
 		loop1:
+			mov ah, 00h
+			int 1Ah
+			mov [ms] , dx
+			mov [alta] , cx
+			
+			lea bx , cronometro
+			call convertaCronometro
+
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
 			mov dh, 2				;3 CUADROS HACIA ABAJO
-			mov dl, 45				;45 CUADROS HACIA LA DERECHA
+			mov dl, 47				;45 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov dx , [ i ]	;dx = i
-			or dl , 30h		;i - 30h
-			mov ah,02h
+			mov ah, 09h
+			lea dx , cronometro
 			int 21h
-
-			;lea dx , [ saltoLinea ]		
-			;mov ax , 0900h		
-			;int 21h		
-			
-			inc [ i ]
 
 
 			;Menu
@@ -475,6 +496,7 @@ main:
 		mov ah, 2ch
 		int 21h
 	
+		;time db "00:00:00 HRS", 0Dh, 0Ah, "$"
 		mov al, ch
 		call convert			;LLAMADA A LA FUNCION convert
 		mov [bx], ax			;SE CONVIERTEN LAS HORAS
@@ -505,33 +527,53 @@ main:
 		ret 					;RETORNAMOS EL VALOR OBTENIDO
 	convert endp
 	
-	;Procemientos del cronometro
-;	Play proc
-;		;Procedimiento que sirve para iniciar el cronometro
-;		lea dx , tmp
-;		int 21
-;	Play endp
-;		
-;	Pausa proc
-;		;Procedimiento que sirve para pausar el cronometro
-;		lea dx , tmp
-;		int 21
-;	Pausa endp
-;	
-;	Reset proc
-;		;Procedimiento que sirve para reiniciar el cronometro
-;		lea dx , tmp
-;		int 21
-;	Reset endp
-;	
-;	Exit proc
-;		;Procedimiento que sirve para regresar al menu principal
-;		lea dx , tmp
-;		int 21
-;	Exit endp
+	convertaCronometro proc
+		push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
+		push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
+	
+		mov ax, alta
+		mov ah , 0
+		call convert			;LLAMADA A LA FUNCION convert
+		mov [bx+3], ax			;SE CONVIERTEN LAS HORAS
+	
+		mov ax, ms
+		mov ah ,0
+		call convertcron			;LLAMADA A LA FUNCION convert
+		mov [bx+6], ax			;SE CONVIERTEN LAS HORAS
+	
+		pop cx 					;SACAMOS DE LA PILA cx
+		pop ax					;SACAMOS DE LA PILA ax
+	
+		ret 					;RETORNAMOS LOS VALORES OBTENIDOS
+	convertaCronometro endp
 
-	;Pausa
+	convertcron proc 				;INICIO DE LA FUNCION convert
+		push dx 				;LO QUE CONTIENE dx SE GUARDA EN LA PILA
+	
+		;mov ah, 0				;UTILIZAMOS ESTAS FUNCIONES PARA PASAR DE ASCII A DECIMAL
+		mov dh, 0
+		mov dl, 10
+		div dl
+		or ax, 3030h	
+	
+		pop dx					;SACAMOS DE LA PILA dx
+		ret 					;RETORNAMOS EL VALOR OBTENIDO
+	convertcron endp
 
+	reset proc
+		push ax
+		push cx
+		push bx
+
+		mov ax , 3030h
+		mov [bx+6], ax
+		mov [bx+3], ax
+		pop bx
+		pop cx
+		pop ax
+		ret
+	reset endp
+		
 	
 salir:
 	mov ax, 0600h			;LLAMADA A LA FUNCIÓN

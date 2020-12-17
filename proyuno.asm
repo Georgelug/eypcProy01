@@ -705,7 +705,6 @@ main:
 
 		mov ax,dx
 		mul [tick_ms]
-		xor dx,dx
 		div [mil]
 	
 		mov [miliSegundos], dx

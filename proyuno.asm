@@ -193,14 +193,14 @@ main:
 
 
 	imprimeCronometro:
-		mov [ms] , 00h
-		mov [s] , 30h
-		mov [m] , 30h		
+		mov [ms] , 00h 			;se inicializa ms = 0
+		mov [s] , 30h 			;s = 30h, para fines practicos se igualan tanto m como s a 30h por que es el equivalente a 0d en ASCII
+		mov [m] , 30h			;m = 30h
 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
-		mov dh, 2				;3 CUADROS HACIA ABAJO
-		mov dl, 47				;45 CUADROS HACIA LA DERECHA
+		mov dh, 2				;2 CUADROS HACIA ABAJO
+		mov dl, 47				;47 CUADROS HACIA LA DERECHA
 		int 10h
 
 		mov dl , 20h
@@ -208,17 +208,17 @@ main:
 		int 21h
 
 
-		lea bx , cronometro
-		call reset	
+		lea bx , cronometro 	;se obtiene el cronometro guardando la info en la variable cronometro
+		call reset				;se manda llamar el procedimiento  reset para resetear el cronometro
 
 		;TITULO 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
 		mov dh, 1				;1 CUADROS HACIA ABAJO
-		mov dl, 32				;30 CUADROS HACIA LA DERECHA
+		mov dl, 32				;32 CUADROS HACIA LA DERECHA
 		int 10h
 
-		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN tituloCronometro
 		lea dx, tituloCronometro
 		int 21h
 
@@ -226,45 +226,45 @@ main:
 		;Cronometro como tal
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
-		mov dh, 2				;3 CUADROS HACIA ABAJO
-		mov dl, 47				;45 CUADROS HACIA LA DERECHA
+		mov dh, 2				;2 CUADROS HACIA ABAJO
+		mov dl, 47				;47 CUADROS HACIA LA DERECHA
 		int 10h
 
 
 
-		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
-		lea dx, cronometro
+		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN cronometro
+		lea dx, cronometro 		
 		int 21h
 
 
 		;Menu
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
-		mov dh, 4				;3 CUADROS HACIA ABAJO
-		mov dl, 30				;45 CUADROS HACIA LA DERECHA
+		mov dh, 4				;4 CUADROS HACIA ABAJO
+		mov dl, 30				;30 CUADROS HACIA LA DERECHA
 		int 10h
 
-		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN menu2
 		lea dx, menu2
 		int 21h
 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
-		mov dh, 5				;3 CUADROS HACIA ABAJO
-		mov dl, 30				;45 CUADROS HACIA LA DERECHA
+		mov dh, 5				;5 CUADROS HACIA ABAJO
+		mov dl, 30				;30 CUADROS HACIA LA DERECHA
 		int 10h
 
-		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN iniciar
 		lea dx, iniciar
 		int 21h
 
 		mov ah, 02h				;POSICIONA EL CURSOR EN:
 		mov bh, 00d
-		mov dh, 6				;3 CUADROS HACIA ABAJO
-		mov dl, 30				;45 CUADROS HACIA LA DERECHA
+		mov dh, 6				;6 CUADROS HACIA ABAJO
+		mov dl, 30				;30 CUADROS HACIA LA DERECHA
 		int 10h
 
-		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+		mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN regresar
 		lea dx, regresar
 		int 21h
 
@@ -282,60 +282,60 @@ main:
 		je limpiar			;pendiente: limpiar
 
 		loop1:
-			mov ah, 00h
-			int 1Ah
-			mov [ms] , dx
-			mov [alta] , cx
-			
-			lea bx , cronometro
-			call convertaCronometro
+			mov ah, 00h 			;Se manda a llamar la interrupcion int 1AH la opcion 00h, la retorna el estado del reloj del sistema
+			int 1Ah 				; CX : DX , tal que CX no se que haga y DX, la parte baja son los milis que se necesitan para el cronometro	
+			mov [ms] , dx 			;ms = dx
+			mov [alta] , cx 		;alta = cx
+				
+			lea bx , cronometro 	;Se accede lo que tiene guardado la variable cronometro para ir guardando lo que se recibio ANTERIORMENTE
+			call convertaCronometro ;Se manda llamar la funcion para convertir la informacion adquirida por la int 1Ah 
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 2				;3 CUADROS HACIA ABAJO
-			mov dl, 47				;45 CUADROS HACIA LA DERECHA
+			mov dh, 2				;2 CUADROS HACIA ABAJO
+			mov dl, 47				;47 CUADROS HACIA LA DERECHA
 			int 10h
 
 			mov ah, 09h
-			lea dx , cronometro
+			lea dx , cronometro 	;imprime la info guardada del cronometro
 			int 21h
 
 
 			;Menu
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 4				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 4				;4 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN menu2
 			lea dx, menu2
 			int 21h
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 5				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 5				;5 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN detener
 			lea dx, detener
 			int 21h
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 6				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 6				;6 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reiniciar
 			lea dx, reiniciar
 			int 21h
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 7				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 7				;7 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
 			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
@@ -361,17 +361,17 @@ main:
 			jmp limpiar
 
 		auxiliar:
-			jmp pausaloop
+			jmp pausaloop		;etiqueta auxiliar para saltar al loop de pausa
 
 		pausaloop:
 			;Cronometro como tal
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 2				;3 CUADROS HACIA ABAJO
-			mov dl, 47				;45 CUADROS HACIA LA DERECHA
+			mov dh, 2				;2 CUADROS HACIA ABAJO
+			mov dl, 47				;47 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN cronometro
 			lea dx, cronometro
 			int 21h
 
@@ -379,8 +379,8 @@ main:
 			;Menu
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 4				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 4				;4 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
 			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
@@ -389,32 +389,31 @@ main:
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 5				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 5				;5 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN iniciar
 			lea dx, iniciar
 			int 21h
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 6				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 6				;6 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reiniciar
 			lea dx, reiniciar
 			int 21h
 
 			mov ah, 02h				;POSICIONA EL CURSOR EN:
 			mov bh, 00d
-			mov dh, 7				;3 CUADROS HACIA ABAJO
-			mov dl, 30				;45 CUADROS HACIA LA DERECHA
+			mov dh, 7				;7 CUADROS HACIA ABAJO
+			mov dl, 30				;30 CUADROS HACIA LA DERECHA
 			int 10h
 
-			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN reloj
-			lea dx, regresar
+			mov ah, 09h				;IMPRIME EL MENSAJE GUARDADO EN regresar
 			int 21h
 
 			mov ah, 1				;SENTENCIA QUE ESTA EN CONSTANTE FUNCIONAMIENTO Y SERÁ INTERRUMPIDA
@@ -517,54 +516,54 @@ main:
 	convert endp
 	
 	GETDATE proc 					;INICIO DEL PROCESO GETTIME
-	push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
-	push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
+		push ax					;LO QUE CONTIENE ax SE GUARDA EN LA PILA
+		push cx					;LO QUE CONTIENE bx SE GUARDA EN LA PILA
 
-	mov ah, 2Ah 				;INTERRUPCION QUE SIRVE PARA OBTENER LA FECHA DEL SISTEMA
-	int 21h
+		mov ah, 2Ah 				;INTERRUPCION QUE SIRVE PARA OBTENER LA FECHA DEL SISTEMA
+		int 21h
 
-	mov ax, cx 				;GUARDAMOS EN AX EL CONTENIDO DE CX, EN ESTE CASO EL AÑO
-	mov cx, ax 				;GUARDAMOS EN CX UNA COPIA DE AX PARA EVITAR PROBLEMAS EN EL CODIGO
+		mov ax, cx 				;GUARDAMOS EN AX EL CONTENIDO DE CX, EN ESTE CASO EL AÑO
+		mov cx, ax 				;GUARDAMOS EN CX UNA COPIA DE AX PARA EVITAR PROBLEMAS EN EL CODIGO
 
-	AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
-	mov al, 0				;MOVEMOS A AL 0d 
-	AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
-	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
-	or al, 30h 				;PASAMOS DE ASCII A DECIMAL
-	mov [bx+9], al    			;SE MUEVEN LAS UNIDADES DEL AÑO A LA POSICION QUE TIENE [bx+9]
+		AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
+		mov al, 0				;MOVEMOS A AL 0d 
+		AAM					;(ASCII ADJUST AX AFTER MULTIPLY)
+		mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
+		or al, 30h 				;PASAMOS DE ASCII A DECIMAL
+		mov [bx+9], al    			;SE MUEVEN LAS UNIDADES DEL AÑO A LA POSICION QUE TIENE [bx+9]
 						;EJEMPLO 00/00/0000
 
-	mov ax, cx 				;LO GUARDADO ANTERIORMENTE ES MOVIDO A AX
-	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+		mov ax, cx 				;LO GUARDADO ANTERIORMENTE ES MOVIDO A AX
+		AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
 
-	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 2
-	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
-	or al, 30h 				;PASAMOS DE ASCII A DECIMAL
-	mov [bx+8], al 				;SE MUEVEN LAS DECENAS DEL AÑO A LA POSICION QUE TIENE [bx+8]
+		mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 2
+		AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+		or al, 30h 				;PASAMOS DE ASCII A DECIMAL
+		mov [bx+8], al 				;SE MUEVEN LAS DECENAS DEL AÑO A LA POSICION QUE TIENE [bx+8]
 						;EJEMPLO 00/00/0020
 
-	mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
-	AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
-	or ax, 3030h 				;PASAMOS DE ASCII A DECIMAL
-	mov [bx+7], ah 				;SE MUEVEN LAS CENTENAS DEL AÑO A LA POSICION QUE TIENE [bx+7]
-	mov [bx+6], al 				;SE MUEVEN LAS UNIDADES DE MILLAR DEL AÑO A LA POSICION QUE TIENE [bx+6]
+		mov al, ah 				;GUARDAMOS EN AL EL CONTENIDO DE AH = 0
+		AAM 					;(ASCII ADJUST AX AFTER MULTIPLY)
+		or ax, 3030h 				;PASAMOS DE ASCII A DECIMAL
+		mov [bx+7], ah 				;SE MUEVEN LAS CENTENAS DEL AÑO A LA POSICION QUE TIENE [bx+7]
+		mov [bx+6], al 				;SE MUEVEN LAS UNIDADES DE MILLAR DEL AÑO A LA POSICION QUE TIENE [bx+6]
 						;EJEMPLO 00/00/2020
 
-	mov al, dh 				;GUARDAMOS EN AL EL CONTENIDO DE DH, EN ESTE CASO EL NUMERO DE MES 
-	call convert 				;LLAMAMOS AL PROCESO CONVERT
-	mov [bx+3], ax 				;SE MUEVE EL NUMERO DE MES A LA POSICION QUE CONTIENE [bx+3]
+		mov al, dh 				;GUARDAMOS EN AL EL CONTENIDO DE DH, EN ESTE CASO EL NUMERO DE MES 
+		call convert 				;LLAMAMOS AL PROCESO CONVERT
+		mov [bx+3], ax 				;SE MUEVE EL NUMERO DE MES A LA POSICION QUE CONTIENE [bx+3]
 						;EJEMPLO 00/12/2020
 
-	mov al, dl 				;GUARDAMOS EN AL EL CONTENIDO DE DL, EN ESTE CASO EL NUMERO DEL DÍA
-	call convert 				;LLAMAMOS AL PROCESO CONVERT
-	mov [bx], ax 				;SE MUEVE EL NUMERO DEL DIA A LA POSICION QUE CONTIENE [bx]
+		mov al, dl 				;GUARDAMOS EN AL EL CONTENIDO DE DL, EN ESTE CASO EL NUMERO DEL DÍA
+		call convert 				;LLAMAMOS AL PROCESO CONVERT
+		mov [bx], ax 				;SE MUEVE EL NUMERO DEL DIA A LA POSICION QUE CONTIENE [bx]
 						;EJEMPLO 14/12/2020
 
-	pop cx 					;SACAMOS DE LA PILA cx
-	pop ax					;SACAMOS DE LA PILA ax
+		pop cx 					;SACAMOS DE LA PILA cx
+		pop ax					;SACAMOS DE LA PILA ax
 
-	ret 					;CERRAMOS EL PROCESO Y CONTINUAMOS CON EL FLUJO DEL PROGRAMA
-GETDATE endp
+		ret 					;CERRAMOS EL PROCESO Y CONTINUAMOS CON EL FLUJO DEL PROGRAMA
+	GETDATE endp
 
 
 	;Procedimientos del cronometro
@@ -574,12 +573,12 @@ GETDATE endp
 	
 		mov ax, alta
 		mov ah , 0
-		call convert			;LLAMADA A LA FUNCION convert
+		call convertcron			;LLAMADA A LA FUNCION convertcron
 		mov [bx+3], ax			;SE CONVIERTEN LAS HORAS
 	
 		mov ax, ms
 		mov ah ,0
-		call convertcron			;LLAMADA A LA FUNCION convert
+		call convertcron			;LLAMADA A LA FUNCION convertcron
 		mov [bx+7], ax			;SE CONVIERTEN LAS HORAS
 	
 		pop cx 					;SACAMOS DE LA PILA cx
@@ -601,12 +600,12 @@ GETDATE endp
 		ret 					;RETORNAMOS EL VALOR OBTENIDO
 	convertcron endp
 
-	reset proc
+	reset proc 					;procedimiento que sirve para resetear la variable cronometro 
 		push ax
 		push cx
 		push bx
 
-		mov ax , 3030h
+		mov ax , 3030h			; se iguala a 3030h por que es el equivalente a 0d en ASCII
 		mov [bx], ax
 		mov [bx+3], ax
 		mov [bx+6], ax

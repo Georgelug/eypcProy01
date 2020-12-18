@@ -595,7 +595,9 @@ GETTIMER proc
 	mov bx, [tiempoInicial+2]	;BX = parte alta de t_inicial
 
 	sub dx, ax  				;DX = DX - AX = t_final - t_inicial, DX guarda la parte baja del contador de ticks
-	sbb cx, bx 					;CX = CX - BX - C = t_final - t_inicial - C, CX guarda la parte alta del contador de ticks y se resta el acarreo si hubo en la resta anterior
+	sbb cx, bx 					;CX = CX - BX - C = t_final - t_inicial - C, 
+								;CX guarda la parte alta del contador de ticks y 
+								;se resta el acarreo si hubo en la resta anterior
 
 	mov ax, dx 				;GUARDAMOS EN ax EL CONTENIDO DE dx, EN ESTE CASO LA PARTE BAJA DEL CONTADOR 
 	mul [tick_ms] 			;MULTIPLICAMOS ax POR LOS TICKS QUE EXISTEN EN CADA MILISEGUNDO
